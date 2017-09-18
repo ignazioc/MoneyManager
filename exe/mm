@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+require 'MoneyManager'
+require 'commander/import'
+
+program :name, 'mm'
+program :version, Moneymanager::VERSION
+program :description, 'Manage your money via commandline'
+
+command :add do |c|
+  c.syntax = 'mm add <path>'
+  c.description = 'Import the CSV file'
+  c.action do |args, _options|
+    abort(c.syntax) if args.first.nil?
+    parser = Moneymanager::Parser.new args.first
+    entries = parser.parse
+    archiver = Moneymanager::Archiver.new
+    archiver.store(entries)
+  end
+end
+
+command :print do |c|
+  c.syntax = 'mm print [--month <month>]'
+  c.description = 'Print the list of transactions'
+  c.option '--month INTEGER', Integer, 'Specify the month to print.'
+  c.action do |_args, options|
+    entries = get_entries(options.month)
+    Layout.print_multiple(entries)
+  end
+end
+
+command :tag do |c|
+  c.syntax = 'mm tags'
+  c.description = 'Print the list of transactions'
+  c.option '--month INTEGER', Integer, 'Specify the month to tag.'
+  c.action do |_args, options|
+    entries = get_entries(options.month)
+    Tagger.new.retag(entries)
+  end
+end
+
+command :review do |c|
+  c.syntax = 'mm review'
+  c.description = 'Start the review process'
+  c.option '--month INTEGER', Integer, 'Specify the month to review.'
+  c.action do |_args, options|
+    entries = get_entries(options.month)
+    Reviewer.new.review(entries)
+  end
+end
+
+command :summary do |c|
+  c.syntax = 'mm summary'
+  c.description = 'Print the sum of the revenue, the sum of the expenses and the differences'
+  c.option '--month INTEGER', Integer, 'Specify the month to review.'
+  c.action do |_args, options|
+    entries = get_entries(options.month)
+    expenses =  entries.reject(&:is_income).map(&:amount).reduce(:+)
+    incomes = entries.reject(&:is_expense).map(&:amount).reduce(:+)
+    Layout.print_summary(incomes, expenses)
+
+  end
+end
+
+def get_entries(month)
+  month ||= Date.today.month
+  archiver = Moneymanager::Archiver.new
+  archiver.all_entries_per_month(month)
+end
