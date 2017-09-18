@@ -1,34 +1,74 @@
 # Moneymanager
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/moneymanager`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is ruby app I wrote to help me managing my personal finance. Some features are still missing, I'll add in the future.
+I ended up writing my own tool instead of using MoneyWiz et simila is that all the tools I tried are either overcomplicated or dont'have the basic information I need (and also because I like writing Ruby code)
 
-TODO: Delete this and the text above, and describe your gem
+## Features
 
-## Installation
+* Import transactions from a `CSV - CAMT` file. I'm not sure about your bank, but SparkasseBerlin has this option.
+* The import process is idempotent. I don't wanna have trouble because I imported twice the same file.
+* Print the list of transacions filtered by months.
+* Review the transaction and flag all the approved ones.
+* Tag the transaction and assign a tag to each one
+* Print the summary of income/expense.
 
-Add this line to your application's Gemfile:
+## Why you shouldn't use this
 
-```ruby
-gem 'moneymanager'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install moneymanager
+* The database is just a plain, non-encrypted file. 
+* There are no fancy charts. Basic text reports like "How much did I spend in gasoline last month?" are planned for the next release.
+* The `print/review/tag` taks are _monthly_ based. If you have undreds of transaction per month using this tool can be tedious.
+* 
 
 ## Usage
 
-TODO: Write usage instructions here
+### 1. Install the gem
 
-## Development
+	$ gem install moneymanager
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+### 2. Import your CSV FILE
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+	$ mm add exported.csv
+
+![](imgs/import.png)
+
+### 3. Print the transactions
+
+	$ mm print --month 8
+
+![](imgs/list.png)
+
+
+### 4. Print a minimalist summary
+
+	$ mm summary --month 8
+
+![](imgs/summary.png)
+
+### 5. Review and approve the transactions
+
+	$ mm review --month 8
+
+![](imgs/review.png)
+
+
+### 6. Assign a tag to each of the transactions
+
+	$ mm tag --month 8
+
+![](imgs/tag.png)
+
+
+### 7. Enjoi the list of transaction approved and categorized
+
+	$ mm print --month 8
+
+![](imgs/final_summary.png)
+
+
+## Next release
+
+* Add basic report for each tag.
+* Multiple tags
 
 ## Contributing
 
