@@ -31,9 +31,9 @@ module Moneymanager
     def is_expense
       amount < 0
     end
+
     def is_income
       !is_expense
     end
-    
   end
 end

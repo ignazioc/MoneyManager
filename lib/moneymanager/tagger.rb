@@ -6,8 +6,6 @@ class Tagger
   def retag(entries)
     archiver = Moneymanager::Archiver.new
 
-
-
     prompt = TTY::Prompt.new
     entries.each do |entry|
       Layout.clear

@@ -18,6 +18,16 @@ command :add do |c|
   end
 end
 
+command :reset do |c|
+  c.syntax = 'mm reset'
+  c.description = 'Delete the current archive (danger zone!)'
+  c.action do |_args, _options|
+    if agree('Do you really want to delete everything?')
+      Moneymanager::Archiver.reset
+    end
+  end
+end
+
 command :print do |c|
   c.syntax = 'mm print [--month <month>]'
   c.description = 'Print the list of transactions'
@@ -54,10 +64,9 @@ command :summary do |c|
   c.option '--month INTEGER', Integer, 'Specify the month to review.'
   c.action do |_args, options|
     entries = get_entries(options.month)
-    expenses =  entries.reject(&:is_income).map(&:amount).reduce(:+)
+    expenses = entries.reject(&:is_income).map(&:amount).reduce(:+)
     incomes = entries.reject(&:is_expense).map(&:amount).reduce(:+)
     Layout.print_summary(incomes, expenses)
-
   end
 end
 

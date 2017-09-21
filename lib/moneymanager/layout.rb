@@ -24,8 +24,8 @@ class Layout
   end
 
   def self.formatted_amount(amount)
-      s = amount.to_s + ' €'
-      amount < 0 ? s.red : s.green
+    s = amount.to_s + ' €'
+    amount < 0 ? s.red : s.green
   end
 
   def self.print_summary(income, expenses)
@@ -36,7 +36,7 @@ class Layout
       t << ['Delta', formatted_amount(delta)]
     end
     table.align_column(1, :right)
-    table.title = "Summary"
+    table.title = 'Summary'
     puts table
   end
 

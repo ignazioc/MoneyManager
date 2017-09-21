@@ -1,7 +1,7 @@
 require 'terminal-table'
 require 'colorize'
 require 'tty-prompt'
-require "moneymanager/version"
+require 'moneymanager/version'
 require 'moneymanager/archiver'
 require 'moneymanager/layout'
 require 'moneymanager/parser'
