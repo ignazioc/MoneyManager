@@ -16,7 +16,7 @@ module Moneymanager
     end
 
     def initialize
-      @db = File.exist? Archiver.archive_path ? YAML.load_file(Archiver.archive_path) : Archiver.empty_archive
+      @db = (File.exist? Archiver.archive_path) ? YAML.load_file(Archiver.archive_path) : Archiver.empty_archive
     end
 
     def save
