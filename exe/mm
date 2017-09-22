@@ -64,9 +64,32 @@ command :summary do |c|
   c.option '--month INTEGER', Integer, 'Specify the month to review.'
   c.action do |_args, options|
     entries = get_entries(options.month)
-    expenses = entries.reject(&:is_income).map(&:amount).reduce(:+)
-    incomes = entries.reject(&:is_expense).map(&:amount).reduce(:+)
+    expenses = entries.reject(&:income?).map(&:amount).reduce(:+)
+    incomes = entries.reject(&:expense?).map(&:amount).reduce(:+)
     Layout.print_summary(incomes, expenses)
+  end
+end
+
+command :report do |c|
+  c.syntax = 'mm report'
+  c.description = 'Print all the revenues and all the expenses grouped by tag'
+  c.option '--month INTEGER', Integer, 'Specify the month to report.'
+  c.action do |_args, options|
+    entries = get_entries(options.month)
+    expenses = entries.reject(&:income?).each_with_object(Hash.new(0)) do |current, sum|
+      tag = current.tag ||= 'Unknown'
+      sum[tag] += current.amount
+    end
+    incomes = entries.reject(&:expense?).each_with_object(Hash.new(0)) do |current, sum|
+      tag = current.tag ||= 'Unknown'
+      sum[tag] += current.amount
+    end
+
+    incomes = incomes.map { |x, v| [x, v] }
+    Layout.print_summary_per_category('Incomes', incomes)
+
+    expenses = expenses.map { |x, v| [x, v] }
+    Layout.print_summary_per_category('Expenses', expenses)
   end
 end
 

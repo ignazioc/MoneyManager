@@ -40,6 +40,19 @@ class Layout
     puts table
   end
 
+  def self.print_summary_per_category(title, rows)
+    rows = rows.sort! { |r1, r2| r1.first <=> r2.first }
+    rows = rows.map do |row|
+      row[-1] = formatted_amount(row.last)
+      row
+    end
+    table = Terminal::Table.new rows: rows
+    table.align_column(1, :right)
+    table.title = title
+
+    puts table
+  end
+
   def self.clear
     print "\e[H\e[2J"
   end

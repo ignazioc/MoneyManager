@@ -28,12 +28,12 @@ module Moneymanager
       amount < 0 ? s.red : s.green
     end
 
-    def is_expense
+    def expense?
       amount < 0
     end
 
-    def is_income
-      !is_expense
+    def income?
+      !expense?
     end
   end
 end
