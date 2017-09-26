@@ -10,7 +10,7 @@ class Tagger
     entries.each do |entry|
       Layout.clear
       Layout.print_single(entry)
-      options = default_options.concat(archiver.tags)
+      options = default_options.concat(archiver.tags.sort!)
       action = prompt.select('Do you want add a tags?', options, per_page: 30)
 
       if action == default_options[0]
