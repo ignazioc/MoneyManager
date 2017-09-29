@@ -69,10 +69,9 @@ command :report do |c|
     command = prompt.select('Which type of report?') do |menu|
       menu.choice 'Global Incomes/Expenses', :global
       menu.choice 'All categories', :all
-      menu.choice 'One category', :one
+      menu.choice 'Specific Tag', :one
     end
 
-    puts command
     case command
     when :global
       print_global_report(entries)
@@ -81,7 +80,7 @@ command :report do |c|
     when :one
       archiver = Moneymanager::Archiver.new
       tags = archiver.tags.sort!
-      tag = prompt.select('Do you want add a tags?', tags, per_page: 30)
+      tag = prompt.select('Select a tag.', tags, per_page: 30)
       print_one_category_report(entries, tag)
       end
   end
