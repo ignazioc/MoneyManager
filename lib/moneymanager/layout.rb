@@ -41,6 +41,7 @@ class Layout
   end
 
   def self.print_summary_per_category(title, rows)
+    return unless rows.count > 0
     rows = rows.sort! { |r1, r2| r1.first <=> r2.first }
     rows = rows.map do |row|
       row[-1] = formatted_amount(row.last)

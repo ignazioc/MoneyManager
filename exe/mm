@@ -65,23 +65,25 @@ command :report do |c|
   c.action do |_args, options|
     entries = get_entries(options.month)
 
-    # options = ["Global "]
     prompt = TTY::Prompt.new
-    command = prompt.select("Choose your destiny?") do |menu|
+    command = prompt.select('Which type of report?') do |menu|
       menu.choice 'Global Incomes/Expenses', :global
       menu.choice 'All categories', :all
-      menu.choice 'One categoy', :one
+      menu.choice 'One category', :one
     end
 
     puts command
     case command
-      when :global
-        print_global_report(entries)
-      when :all
-        print_all_categories_report(entries)
-      when :one
-        exit
-      end    
+    when :global
+      print_global_report(entries)
+    when :all
+      print_all_categories_report(entries)
+    when :one
+      archiver = Moneymanager::Archiver.new
+      tags = archiver.tags.sort!
+      tag = prompt.select('Do you want add a tags?', tags, per_page: 30)
+      print_one_category_report(entries, tag)
+      end
   end
 end
 
@@ -108,8 +110,18 @@ def print_all_categories_report(entries)
   Layout.print_summary_per_category('Expenses', expenses)
 end
 
+def print_one_category_report(entries, tag)
+  entries = entries.select do |entry|
+    entry.tag == tag
+  end
+  print_all_categories_report(entries)
+end
+
 def get_entries(month)
-  month ||= Date.today.month
   archiver = Moneymanager::Archiver.new
-  archiver.all_entries_per_month(month)
+  if month.nil?
+    archiver.all_entries
+  else
+    archiver.all_entries_per_month(month)
+  end
 end
