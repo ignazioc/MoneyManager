@@ -18,6 +18,16 @@ command :add do |c|
   end
 end
 
+command :reset do |c|
+  c.syntax = 'mm reset'
+  c.description = 'Delete the current archive (danger zone!)'
+  c.action do |_args, _options|
+    if agree('Do you really want to delete everything?')
+      Moneymanager::Archiver.reset
+    end
+  end
+end
+
 command :print do |c|
   c.syntax = 'mm print [--month <month>]'
   c.description = 'Print the list of transactions'
@@ -48,21 +58,69 @@ command :review do |c|
   end
 end
 
-command :summary do |c|
-  c.syntax = 'mm summary'
-  c.description = 'Print the sum of the revenue, the sum of the expenses and the differences'
-  c.option '--month INTEGER', Integer, 'Specify the month to review.'
+command :report do |c|
+  c.syntax = 'mm report'
+  c.description = 'Print all the revenues and all the expenses grouped by tag'
+  c.option '--month INTEGER', Integer, 'Specify the month to report.'
   c.action do |_args, options|
     entries = get_entries(options.month)
-    expenses =  entries.reject(&:is_income).map(&:amount).reduce(:+)
-    incomes = entries.reject(&:is_expense).map(&:amount).reduce(:+)
-    Layout.print_summary(incomes, expenses)
 
+    prompt = TTY::Prompt.new
+    command = prompt.select('Which type of report?') do |menu|
+      menu.choice 'Global Incomes/Expenses', :global
+      menu.choice 'All categories', :all
+      menu.choice 'Specific Tag', :one
+    end
+
+    case command
+    when :global
+      print_global_report(entries)
+    when :all
+      print_all_categories_report(entries)
+    when :one
+      archiver = Moneymanager::Archiver.new
+      tags = archiver.tags.sort!
+      tag = prompt.select('Select a tag.', tags, per_page: 30)
+      print_one_category_report(entries, tag)
+      end
   end
 end
 
+def print_global_report(entries)
+  expenses = entries.reject(&:income?).map(&:amount).reduce(:+)
+  incomes = entries.reject(&:expense?).map(&:amount).reduce(:+)
+  Layout.print_summary(incomes, expenses)
+end
+
+def print_all_categories_report(entries)
+  expenses = entries.reject(&:income?).each_with_object(Hash.new(0)) do |current, sum|
+    tag = current.tag ||= 'Unknown'
+    sum[tag] += current.amount
+  end
+  incomes = entries.reject(&:expense?).each_with_object(Hash.new(0)) do |current, sum|
+    tag = current.tag ||= 'Unknown'
+    sum[tag] += current.amount
+  end
+
+  incomes = incomes.map { |x, v| [x, v] }
+  Layout.print_summary_per_category('Incomes', incomes)
+
+  expenses = expenses.map { |x, v| [x, v] }
+  Layout.print_summary_per_category('Expenses', expenses)
+end
+
+def print_one_category_report(entries, tag)
+  entries = entries.select do |entry|
+    entry.tag == tag
+  end
+  print_all_categories_report(entries)
+end
+
 def get_entries(month)
-  month ||= Date.today.month
   archiver = Moneymanager::Archiver.new
-  archiver.all_entries_per_month(month)
+  if month.nil?
+    archiver.all_entries
+  else
+    archiver.all_entries_per_month(month)
+  end
 end

@@ -16,10 +16,10 @@ module Moneymanager
     end
 
     def initialize
-      @db = if File.exist? Archiver.archive_path
-        YAML.load_file(Archiver.archive_path)
+      if File.exist? Archiver.archive_path
+        @db = YAML.load_file(Archiver.archive_path)
       else
-        Archiver.empty_archive
+        @db = Archiver.empty_archive
       end
     end
 
@@ -59,6 +59,7 @@ module Moneymanager
     def tags
       @db[:tags]
     end
+
     def store_tag(tag)
       @db[:tags] << tag
       save

@@ -24,8 +24,8 @@ class Layout
   end
 
   def self.formatted_amount(amount)
-      s = amount.to_s + ' €'
-      amount < 0 ? s.red : s.green
+    s = amount.to_s + ' €'
+    amount < 0 ? s.red : s.green
   end
 
   def self.print_summary(income, expenses)
@@ -36,7 +36,21 @@ class Layout
       t << ['Delta', formatted_amount(delta)]
     end
     table.align_column(1, :right)
-    table.title = "Summary"
+    table.title = 'Summary'
+    puts table
+  end
+
+  def self.print_summary_per_category(title, rows)
+    return unless rows.count > 0
+    rows = rows.sort! { |r1, r2| r1.first <=> r2.first }
+    rows = rows.map do |row|
+      row[-1] = formatted_amount(row.last)
+      row
+    end
+    table = Terminal::Table.new rows: rows
+    table.align_column(1, :right)
+    table.title = title
+
     puts table
   end
 
