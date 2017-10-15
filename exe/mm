@@ -67,21 +67,27 @@ command :report do |c|
 
     prompt = TTY::Prompt.new
     command = prompt.select('Which type of report?') do |menu|
-      menu.choice 'Global Incomes/Expenses', :global
-      menu.choice 'All categories', :all
-      menu.choice 'Specific Tag', :one
+      menu.choice 'Total (Incomes)', :global_incomes
+      menu.choice 'Total (Expenses)', :global_expenses
+      menu.choice 'All Incomes', :all_incomes
+      menu.choice 'All Expenses', :all_expenses
+      menu.choice 'Specific Tag', :one_tag
     end
     report = Report.new
     case command
-    when :global
-      report.print_global_report(entries)
-    when :all
-      report.print_all_categories_report(entries)
-    when :one
+    when :global_incomes
+      report.print_total_report(entries, true)
+    when :global_expenses
+      report.print_total_report(entries, false)
+    when :all_incomes
+      report.print_group_by_categories_report(entries, true)
+    when :all_expenses
+      report.print_group_by_categories_report(entries, false)
+    when :one_tag
       archiver = Moneymanager::Archiver.new
       tags = archiver.tags.sort!
       tag = prompt.select('Select a tag.', tags, per_page: 30)
-      report.print_one_category_report(entries, tag)
+      report.print_group_by_month_report(entries,tag)
       end
   end
 end

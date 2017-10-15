@@ -1,32 +1,35 @@
 class Report
-	
-  def print_global_report(entries)
-    expenses = entries.reject(&:income?).map(&:amount).reduce(:+)
-    incomes = entries.reject(&:expense?).map(&:amount).reduce(:+)
-    Layout.print_summary(incomes, expenses)
+
+  def print_total_report(entries, onlyIncome)
+    total = 0
+    if (onlyIncome)
+      total = entries.reject(&:expense?).map(&:amount).reduce(:+)
+    else
+      total = entries.reject(&:income?).map(&:amount).reduce(:+)
+    end
+    Layout.print_single_value(total)
   end
 
-  def print_all_categories_report(entries)
-    expenses = entries.reject(&:income?).each_with_object(Hash.new(0)) do |current, sum|
+  def print_group_by_categories_report(entries, onlyIncome)
+
+    entries = entries.select { |entry|
+      entry.income? == onlyIncome
+    }.each_with_object(Hash.new(0)) { |current, sum|
       tag = current.tag ||= 'Unknown'
       sum[tag] += current.amount
-    end
-    incomes = entries.reject(&:expense?).each_with_object(Hash.new(0)) do |current, sum|
-      tag = current.tag ||= 'Unknown'
-      sum[tag] += current.amount
-    end
-
-    incomes = incomes.map { |x, v| [x, v] }
-    Layout.print_summary_per_category('Incomes', incomes)
-
-    expenses = expenses.map { |x, v| [x, v] }
-    Layout.print_summary_per_category('Expenses', expenses)
+    }.map { |x, v|
+      [x, v]
+    }.sort! { |r1, r2| r1.first <=> r2.first }
+    Layout.print_generic_rows(entries)
   end
 
-  def print_one_category_report(entries, tag)
-    entries = entries.select do |entry|
+  def print_group_by_month_report(entries, tag)
+    entries = entries.select { |entry|
       entry.tag == tag
-    end
-    print_all_categories_report(entries)
+    }.each_with_object(Hash.new(0)) { | current, sum |
+      month = current.date.month
+      sum[month] += current.amount
+    }
+    Layout.print_generic_rows(entries)
   end
 end
