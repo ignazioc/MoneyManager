@@ -17,7 +17,7 @@ I ended up writing my own tool instead of using MoneyWiz et simila is that all t
 
 * The database is just a plain, non-encrypted file. 
 * There are no fancy charts.
-* The `print/review/tag` taks are _monthly_ based. If you have undreds of transaction per month using this tool can be tedious.
+* The filter is _monthly_ based. If you have undreds of transaction per month this tool can be tedious.
 * 
 
 ## Usage
@@ -117,61 +117,59 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
 
 ## Reporting
 
-#### Global Incomes/Expenses
+#### Total
 
 	$ mm report --month 8
 
     $ mm report --month 8
-    Which type of report? (Use arrow keys, press Enter to select)
-    ‣ Global Incomes/Expenses
-      All categories
-      One category
+	Which type of report? (Use arrow keys, press Enter to select)
+	‣ Total (Incomes)
+	  Total (Expenses)
+	  All Incomes
+	  All Expenses
+	  Specific Tag
 
 
-    +---------+-----------+
-    |       Summary       |
-    +---------+-----------+
-    | Income  |  1234.0 € |
-    | Expense | -5678.0 € |
-    | Delta   |  9999.0 € |
-    +---------+-----------+
+	Which type of report? Total (Incomes)
+	+-----------+
+	| 99999.0 € |
+	+-----------+
 
-#### Global Incomes/Expenses
+#### All Incomes/Expenses
 
     
      $ mm report
     Which type of report? (Use arrow keys, press Enter to select)
-      Global Incomes/Expenses
-    ‣ All categories
-      One category
+      Total (Incomes)
+	  Total (Expenses)
+	‣ All Incomes
+	  All Expenses
+	  Specific Tag
     
+      
     
-    +------------+----------+
-    |        Incomes        |
-    +------------+----------+
-    | Salary     |  999.0 € |
-    | Investment |  999.0 € |
-    | Rent       |  999.0 € |
-    +------------+----------+
-    +-------------------+-----------+
-    |           Expenses            |
-    +-------------------+-----------+
-    | Heating           |   -99.0 € |
-    | Mortage           |   -99.0 € |
-    | Car/Gasoline      |   -99.0 € |
-    | Car/Insurace      | -9999.0 € |
-    | Car/Tire          |  -999.0 € |
-    +-------------------+-----------+
+    Which type of report? All Incomes
+	+--------------+----------+
+	| Kindergeld   |  999.0 € |
+	| Rimborsi     |  998.0 € |
+	| Stipendio    | 8998.0 € |
+	| Stockoptions | 9999.0 € |
+	| Unknown      |  888.0 € |
+	+--------------+----------+
+	|             9999999.0 € |
+	+--------------+----------+
     
 
-#### Report for one Tag
+#### One tag grouped by month
 
 
      $ mm report
     Which type of report? (Use arrow keys, press Enter to select)
-      Global Incomes/Expenses
-      All categories
-    ‣ One category
+      Total (Incomes)
+	  Total (Expenses)
+	  All Incomes
+	  All Expenses
+	‣ Specific Tag
     
     Select a tag. (Use arrow keys, press Enter to select)
     ‣ Heating
@@ -180,20 +178,25 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
       Car/Insurance
       Car/Tire
     
-    +-----------------+---------+
-    |         Expenses          |
-    +-----------------+---------+
-    | Heating         | -99.0 € |
-    +-----------------+---------+
+	Select a tag. Kita
+	+---+---------+
+	| 8 | -99.0 € |
+	| 9 | -99.0 € |
+	+---+---------+
+	|    -198.0 € |
+	+---+---------+
 
 
 
 
-## Next release
+## To do
 
-* Report for nested tags ( Car/Gasoline, Car/Insurance etc)
-* Multiple tags
-* Report for one tag splitted by month
+* [ ] Report for nested tags ( Car/Gasoline, Car/Insurance etc)
+* [ ] Multiple tags
+* [x] Report for one tag splitted by month
+* [ ] Add a backup options
+* [ ] Manage multiple banck account
+* [ ] Exclude account transfer from the list of expenses/incomes
 
 ## Contributing
 

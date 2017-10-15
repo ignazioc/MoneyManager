@@ -28,28 +28,25 @@ class Layout
     amount < 0 ? s.red : s.green
   end
 
-  def self.print_summary(income, expenses)
-    delta = income + expenses
+  def self.print_single_value(total)
     table = Terminal::Table.new do |t|
-      t << ['Income', formatted_amount(income)]
-      t << ['Expense', formatted_amount(expenses)]
-      t << ['Delta', formatted_amount(delta)]
+      t << [formatted_amount(total)]
     end
-    table.align_column(1, :right)
-    table.title = 'Summary'
+    table.align_column(0, :right)
     puts table
   end
 
-  def self.print_summary_per_category(title, rows)
+  def self.print_generic_rows(rows)
     return unless rows.count > 0
-    rows = rows.sort! { |r1, r2| r1.first <=> r2.first }
-    rows = rows.map do |row|
-      row[-1] = formatted_amount(row.last)
-      row
-    end
-    table = Terminal::Table.new rows: rows
-    table.align_column(1, :right)
-    table.title = title
+    sum = rows.reduce(0) { |  tot, row | tot + row.last }
+    table = Terminal::Table.new
+    rows = rows.each { |row|
+      table.add_row [
+        { :value => row[0], :alignment => :left},
+      { :value => formatted_amount(row.last), :alignment => :right }]
+    }
+    table.add_separator
+    table.add_row [{ :value => formatted_amount(sum), :colspan => 2, :alignment => :right }]
 
     puts table
   end
