@@ -1,16 +1,21 @@
 class Layout
   def self.print_multiple(entries)
-    clear
-    rows = entries.map { |entry| [entry.formatted_approved, entry.date.strftime('%y/%m/%d'), entry.tag, entry.reason[0...50], entry.formatted_amount] }
+    if entries.count == 1
+      print_single(entries.first)
+    else
+      clear
+      rows = entries.map { |entry| [entry.formatted_approved, entry.date.strftime('%y/%m/%d'), entry.tag, entry.reason[0...50], entry.formatted_amount, entry.digest[0...6]] }
 
-    table = Terminal::Table.new headings: ['✔/✖︎', 'Date', 'Tag', 'Reason', 'Amount'], rows: rows
-    table.align_column(4, :right)
-    table.align_column(0, :center)
+      table = Terminal::Table.new headings: ['✔/✖︎', 'Date', 'Tag', 'Reason', 'Amount', 'SHA1'], rows: rows
+      table.align_column(4, :right)
+      table.align_column(0, :center)
 
-    puts table
+      puts table
+    end
   end
 
   def self.print_single(entry)
+    clear
     hash = {
       date: entry.date,
       reason: entry.reason,
@@ -24,7 +29,7 @@ class Layout
   end
 
   def self.formatted_amount(amount)
-    s = amount.to_s + ' €'
+    s = sprintf('%.2f €', amount)
     amount < 0 ? s.red : s.green
   end
 

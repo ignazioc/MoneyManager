@@ -27,7 +27,7 @@ class Report
     entries = entries.select { |entry|
       entry.tag == tag
     }.each_with_object(Hash.new(0)) { | current, sum |
-      month = current.date.month
+      month = current.date.strftime("%B")
       sum[month] += current.amount
     }
     Layout.print_generic_rows(entries)

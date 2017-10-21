@@ -1,24 +1,34 @@
 # Moneymanager
 
-This is ruby app I wrote to help me managing my personal finance. Some features are still missing, I'll add in the future.
-I ended up writing my own tool instead of using MoneyWiz et simila is that all the tools I tried are either overcomplicated or dont'have the basic information I need (and also because I like writing Ruby code)
+This is ruby app I wrote to help me managing my personal finance. My needs are quite basic:
+
+- Review all the bank transactions to find any fraud or issue
+- Tags the important expenses and incomes to monitor the trend overtime
+
+I wrote my own tool instead of using MoneyWiz because I like writing ruby code and all the commercial apps are overcomplicated for me
 
 ## Features
 
 * Import transactions from a `CSV - CAMT` file. I'm not sure about your bank, but SparkasseBerlin has this option.
-* The import process is idempotent. Import same transaction multiple times doesn't get duplicate.
+* The import process is idempotent, the already imported transactions are just skipped.
 * Print the list of transacions.
-* Review the transaction and flag all the approved ones.
-* Tag the transaction and assign a tag to each one
-* Print the summary of income/expense general or divided by category.
-* All the actions have an options to consider only a specific month.
+* Review the transaction and put a checkmarks on the approved ones.
+* Tag the transactions
+* Analize the transaction with the reports
+
+## Reports
+
+* Total income
+* Total expense
+* All incomes grouped by category
+* All expenses grouped by category
+* Trend of tag overtime
 
 ## Why you shouldn't use this
 
+* Probably your needs are different from mine.
 * The database is just a plain, non-encrypted file. 
-* There are no fancy charts.
-* The filter is _monthly_ based. If you have undreds of transaction per month this tool can be tedious.
-* 
+* There are no fancy charts (so far)
 
 ## Usage
 
@@ -77,7 +87,7 @@ Flag all the approved transaction.
 
 #### Tag each transaction
 
-Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a `/` like `Car/Insurance`s
+Assign a tag to a transaction. To generate hierarchy of tags, use a `/` like `Car/Insurance`
 
 	$ mm tag
 	+----------+------------------------------------------------------+
@@ -117,7 +127,9 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
 
 ## Reporting
 
-#### Total
+#### Total (Incomes or Expenses)
+
+Print the total of the incomes or expenses on the whole archive or on the selected month
 
 	$ mm report --month 8
 
@@ -135,9 +147,11 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
 	| 99999.0 € |
 	+-----------+
 
+
 #### All Incomes/Expenses
 
-    
+Print the list of all the incomes (or expenses) grouped by tag. The entries without a tag are grouped into the `Unknown` tag.
+ 
      $ mm report
     Which type of report? (Use arrow keys, press Enter to select)
       Total (Incomes)
@@ -151,10 +165,10 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
     Which type of report? All Incomes
 	+--------------+----------+
 	| Kindergeld   |  999.0 € |
-	| Rimborsi     |  998.0 € |
-	| Stipendio    | 8998.0 € |
+	| Salary       |  999.0 € |
+	| Investments  | 9999.0 € |
 	| Stockoptions | 9999.0 € |
-	| Unknown      |  888.0 € |
+	| Unknown      |  999.0 € |
 	+--------------+----------+
 	|             9999999.0 € |
 	+--------------+----------+
@@ -162,6 +176,7 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
 
 #### One tag grouped by month
 
+Print al list in which the entries with the selected tag are grouped by month. This is the report you want to use to understand if your heating bill is becoming bigger overtime.
 
      $ mm report
     Which type of report? (Use arrow keys, press Enter to select)
@@ -178,25 +193,28 @@ Assign a tag to each (or not) transaction. To generate hierarchy of tags, use a 
       Car/Insurance
       Car/Tire
     
-	Select a tag. Kita
-	+---+---------+
-	| 8 | -99.0 € |
-	| 9 | -99.0 € |
-	+---+---------+
-	|    -198.0 € |
-	+---+---------+
+	Select a tag. Heating
+	+-----------+---------+
+	| August    | -99.0 € |
+	| September | -99.0 € |
+	+-----------+---------+
+	|            -198.0 € |
+	+-----------+---------+
 
 
 
 
 ## To do
 
+* [x] Filter by one single entry
+* [x] Report for one tag splitted by month
 * [ ] Report for nested tags ( Car/Gasoline, Car/Insurance etc)
 * [ ] Multiple tags
-* [x] Report for one tag splitted by month
 * [ ] Add a backup options
 * [ ] Manage multiple banck account
 * [ ] Exclude account transfer from the list of expenses/incomes
+* [ ] Print fancy chart in html
+
 
 ## Contributing
 
