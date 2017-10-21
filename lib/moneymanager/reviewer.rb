@@ -2,7 +2,6 @@ class Reviewer
   def review(entries)
     archiver = Moneymanager::Archiver.new
     entries.each do |entry|
-      Layout.clear
       Layout.print_single(entry)
       prompt = TTY::Prompt.new
       action = prompt.select('Do you recognize?', %i[yes no skip abort], per_page: 30)

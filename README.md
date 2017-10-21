@@ -206,14 +206,15 @@ Print al list in which the entries with the selected tag are grouped by month. T
 
 ## To do
 
+* [x] Filter by one single entry
+* [x] Report for one tag splitted by month
 * [ ] Report for nested tags ( Car/Gasoline, Car/Insurance etc)
 * [ ] Multiple tags
-* [x] Report for one tag splitted by month
 * [ ] Add a backup options
 * [ ] Manage multiple banck account
 * [ ] Exclude account transfer from the list of expenses/incomes
 * [ ] Print fancy chart in html
-* [ ] Filter by one single entry
+
 
 ## Contributing
 

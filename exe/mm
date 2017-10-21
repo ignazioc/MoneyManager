@@ -32,8 +32,9 @@ command :print do |c|
   c.syntax = 'mm print [--month <month>]'
   c.description = 'Print the list of transactions'
   c.option '--month INTEGER', Integer, 'Specify the month to print.'
+  c.option '--entry STRING', String, 'Specify the entry to print.'
   c.action do |_args, options|
-    entries = get_entries(options.month)
+    entries = get_entries(options.month, options.entry)
     Layout.print_multiple(entries)
   end
 end
@@ -42,8 +43,9 @@ command :tag do |c|
   c.syntax = 'mm tags'
   c.description = 'Print the list of transactions'
   c.option '--month INTEGER', Integer, 'Specify the month to tag.'
+  c.option '--entry STRING', String, 'Specify the entry to tag.'
   c.action do |_args, options|
-    entries = get_entries(options.month)
+    entries = get_entries(options.month, options.entry)
     Tagger.new.retag(entries)
   end
 end
@@ -52,8 +54,9 @@ command :review do |c|
   c.syntax = 'mm review'
   c.description = 'Start the review process'
   c.option '--month INTEGER', Integer, 'Specify the month to review.'
+  c.option '--entry STRING', String, 'Specify the entry to review.'
   c.action do |_args, options|
-    entries = get_entries(options.month)
+    entries = get_entries(options.month, options.entry)
     Reviewer.new.review(entries)
   end
 end
@@ -63,7 +66,7 @@ command :report do |c|
   c.description = 'Print all the revenues and all the expenses grouped by tag'
   c.option '--month INTEGER', Integer, 'Specify the month to report.'
   c.action do |_args, options|
-    entries = get_entries(options.month)
+    entries = get_entries(options.month, nil)
 
     prompt = TTY::Prompt.new
     command = prompt.select('Which type of report?') do |menu|
@@ -88,17 +91,27 @@ command :report do |c|
       tags = archiver.tags.sort!
       tag = prompt.select('Select a tag.', tags, per_page: 30)
       report.print_group_by_month_report(entries,tag)
-      end
+    end
   end
 end
 
 
 
-def get_entries(month)
+def get_entries(month, entry_id)
   archiver = Moneymanager::Archiver.new
-  if month.nil?
-    archiver.all_entries
-  else
-    archiver.all_entries_per_month(month)
+  result = archiver.all_entries
+
+  unless month.nil?
+    result = result.select do |entry|
+      entry.date.month == month
+    end
   end
+
+  unless entry_id.nil?
+    result = result.select do |entry|
+      entry.digest.start_with?(entry_id)
+    end
+  end
+  result
 end
+

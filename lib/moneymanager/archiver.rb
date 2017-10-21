@@ -50,12 +50,6 @@ module Moneymanager
       @db[:entries].sort_by(&:date)
     end
 
-    def all_entries_per_month(month)
-      @db[:entries].sort_by(&:date).select do |entry|
-        entry.date.month == month
-      end
-    end
-
     def tags
       @db[:tags]
     end
