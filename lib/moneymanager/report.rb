@@ -32,4 +32,11 @@ class Report
     }
     Layout.print_generic_rows(entries)
   end
+
+  def print_only_matching_tag(entries, tag)
+    entries = entries.select { |entry|
+      entry.tag == tag
+    }
+    Layout.print_multiple(entries)
+  end
 end
