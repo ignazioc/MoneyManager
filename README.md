@@ -22,6 +22,7 @@ I wrote my own tool instead of using MoneyWiz because I like writing ruby code a
 * Total expense
 * All incomes grouped by category
 * All expenses grouped by category
+* All the entries with a specific tag
 * Trend of tag overtime
 
 ## Why you shouldn't use this
@@ -140,6 +141,7 @@ Print the total of the incomes or expenses on the whole archive or on the select
 	  All Incomes
 	  All Expenses
 	  Specific Tag
+	  Specific Tag (grouped by month)
 
 
 	Which type of report? Total (Incomes)
@@ -159,6 +161,7 @@ Print the list of all the incomes (or expenses) grouped by tag. The entries with
 	‣ All Incomes
 	  All Expenses
 	  Specific Tag
+	  Specific Tag (grouped by month)
     
       
     
@@ -173,7 +176,6 @@ Print the list of all the incomes (or expenses) grouped by tag. The entries with
 	|             9999999.0 € |
 	+--------------+----------+
     
-
 #### One tag grouped by month
 
 Print al list in which the entries with the selected tag are grouped by month. This is the report you want to use to understand if your heating bill is becoming bigger overtime.
@@ -185,6 +187,37 @@ Print al list in which the entries with the selected tag are grouped by month. T
 	  All Incomes
 	  All Expenses
 	‣ Specific Tag
+	  Specific Tag (grouped by month)
+    
+    Select a tag. (Use arrow keys, press Enter to select)
+    ‣ Heating
+      Mortage
+      Car/Gasoline
+      Car/Insurance
+      Car/Tire
+    
+	Select a tag. Heating
+	+-----+----------+---------+--------------------------------------------------+-------------+
+	| ✔/✖︎ | Date     | Tag     | Reason                                           | Amount      |
+	+-----+----------+---------+--------------------------------------------------+-------------+
+	|  ✔︎  | 17/08/01 | Heating | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € |
+	|  ✔︎  | 17/08/01 | Heating | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € |
+	|  ✔︎  | 17/08/31 | Heating | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € |
+	+-----+----------+---------+--------------------------------------------------+-------------+
+
+
+#### One tag grouped by month
+
+Print al list in which the entries with the selected tag are grouped by month. This is the report you want to use to understand if your heating bill is becoming bigger overtime.
+
+     $ mm report
+    Which type of report? (Use arrow keys, press Enter to select)
+      Total (Incomes)
+	  Total (Expenses)
+	  All Incomes
+	  All Expenses
+	  Specific Tag
+	‣ Specific Tag (grouped by month)
     
     Select a tag. (Use arrow keys, press Enter to select)
     ‣ Heating
@@ -214,6 +247,7 @@ Print al list in which the entries with the selected tag are grouped by month. T
 * [ ] Manage multiple banck account
 * [ ] Exclude account transfer from the list of expenses/incomes
 * [ ] Print fancy chart in html
+* [ ] Add more parameters to directly generate the reports avoid the manual selection.
 
 
 ## Contributing
