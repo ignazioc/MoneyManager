@@ -4,10 +4,10 @@ class Layout
       print_single(entries.first)
     else
       clear
-      rows = entries.map { |entry| [entry.formatted_approved, entry.date.strftime('%y/%m/%d'), entry.tag, entry.reason[0...50], entry.formatted_amount, entry.digest[0...6]] }
+      rows = entries.map { |entry| [entry.formatted_approved, entry.formatted_is_bank_tranfer, entry.date.strftime('%y/%m/%d'), entry.tag, entry.reason[0...50], entry.formatted_amount, entry.digest[0...6]] }
 
-      table = Terminal::Table.new headings: ['✔/✖︎', 'Date', 'Tag', 'Reason', 'Amount', 'SHA1'], rows: rows
-      table.align_column(4, :right)
+      table = Terminal::Table.new headings: ['✔/✖︎', '♻︎', 'Date', 'Tag', 'Reason', 'Amount', 'SHA1'], rows: rows
+      table.align_column(5, :right)
       table.align_column(0, :center)
 
       puts table
@@ -22,6 +22,7 @@ class Layout
       amount: entry.formatted_amount,
       company: entry.company,
       approved: entry.formatted_approved,
+      bank_transfer: entry.formatted_is_bank_tranfer,
       tag: entry.tag
     }
     rows = hash.map { |k, v| [k.to_s.capitalize, v] }
@@ -29,7 +30,7 @@ class Layout
   end
 
   def self.formatted_amount(amount)
-    s = sprintf('%.2f €', amount)
+    s = format('%.2f €', amount)
     amount < 0 ? s.red : s.green
   end
 
@@ -43,15 +44,16 @@ class Layout
 
   def self.print_generic_rows(rows)
     return unless rows.count > 0
-    sum = rows.reduce(0) { |  tot, row | tot + row.last }
+    sum = rows.reduce(0) { |tot, row| tot + row.last }
     table = Terminal::Table.new
-    rows = rows.each { |row|
+    rows = rows.each do |row|
       table.add_row [
-        { :value => row[0], :alignment => :left},
-      { :value => formatted_amount(row.last), :alignment => :right }]
-    }
+        { value: row[0], alignment: :left },
+        { value: formatted_amount(row.last), alignment: :right }
+      ]
+    end
     table.add_separator
-    table.add_row [{ :value => formatted_amount(sum), :colspan => 2, :alignment => :right }]
+    table.add_row [{ value: formatted_amount(sum), colspan: 2, alignment: :right }]
 
     puts table
   end

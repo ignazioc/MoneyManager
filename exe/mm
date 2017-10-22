@@ -18,6 +18,15 @@ command :add do |c|
   end
 end
 
+command :backup do |c|
+  c.syntax = 'mm backup'
+  c.description = 'Create a backup copy of your archive (~/.moneymanager)'
+  c.action do |_args, _options|
+    archiver = Moneymanager::Archiver.new
+    archiver.backup
+  end
+end
+
 command :reset do |c|
   c.syntax = 'mm reset'
   c.description = 'Delete the current archive (danger zone!)'
@@ -36,6 +45,25 @@ command :print do |c|
   c.action do |_args, options|
     entries = get_entries(options.month, options.entry)
     Layout.print_multiple(entries)
+  end
+end
+
+command :edit do |c|
+  c.syntax = 'mm edit --entry SHA1'
+  c.description = 'Edit the selected entry'
+  c.option '--entry STRING', String, 'Specify the entry to edit.'
+  c.action do |_args, options|
+    entry = get_entries(nil, options.entry).first
+    prompt = TTY::Prompt.new
+    command = prompt.select('Select one option:') do |menu|
+      menu.choice 'Toggle banck transfer state', :toggle_bank_transfer
+    end
+    case command
+    when :toggle_bank_transfer
+      archiver = Moneymanager::Archiver.new
+      entry.bank_transfer = !entry.bank_transfer
+      archiver.update(entry)
+    end
   end
 end
 
@@ -69,13 +97,14 @@ command :report do |c|
     entries = get_entries(options.month, nil)
 
     prompt = TTY::Prompt.new
-    command = prompt.select('Which type of report?') do |menu|
+    command = prompt.select('Which type of report?', per_page: 30) do |menu|
       menu.choice 'Total (Incomes)', :global_incomes
       menu.choice 'Total (Expenses)', :global_expenses
       menu.choice 'All Incomes', :all_incomes
       menu.choice 'All Expenses', :all_expenses
       menu.choice 'Specific Tag', :one_tag
       menu.choice 'Specific Tag (grouped by month)', :one_tag_grouped_by_month
+      menu.choice 'Bank transfers', :bank_transfers
     end
     report = Report.new
     case command
@@ -91,17 +120,19 @@ command :report do |c|
       archiver = Moneymanager::Archiver.new
       tags = archiver.tags.sort!
       tag = prompt.select('Select a tag.', tags, per_page: 30)
-      report.print_group_by_month_report(entries,tag)
+      report.print_group_by_month_report(entries, tag)
     when :one_tag
       archiver = Moneymanager::Archiver.new
       tags = archiver.tags.sort!
       tag = prompt.select('Select a tag.', tags, per_page: 30)
-      report.print_only_matching_tag(entries,tag)
+      report.print_only_matching_tag(entries, tag)
+    when :bank_transfers
+      archiver = Moneymanager::Archiver.new
+      entries = archiver.all_bank_transfers
+      Layout.print_multiple(entries)
     end
   end
 end
-
-
 
 def get_entries(month, entry_id)
   archiver = Moneymanager::Archiver.new
@@ -120,4 +151,3 @@ def get_entries(month, entry_id)
   end
   result
 end
-

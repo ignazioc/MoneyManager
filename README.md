@@ -126,6 +126,15 @@ Assign a tag to a transaction. To generate hierarchy of tags, use a `/` like `Ca
 	|  ✔︎  | 17/08/31 | ◼◼◼◼◼◼ Censored ◼◼◼◼◼◼ | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € |
 	+-----+----------+------------------------+--------------------------------------------------+-------------+
 
+
+#### Mark a transaction as bank transfer in order to be skipped on the normal reports
+
+The edit command supports only one option so far.
+
+    $ mm edit --entry c88f92
+    Select one option: (Use arrow keys, press Enter to select)
+    ‣ Toggle banck transfer state
+
 ## Reporting
 
 #### Total (Incomes or Expenses)
@@ -234,18 +243,36 @@ Print al list in which the entries with the selected tag are grouped by month. T
 	|            -198.0 € |
 	+-----------+---------+
 
+#### One tag grouped by month
 
+If you're moving some money to/from a different account of yours, the related entries should be marked as "bank transfer" in order to not compromise your income/expense reports. This specific report can be used to print only the bank transfers entries
 
+    Which type of report? (Use arrow keys, press Enter to select)
+    ‣ Total (Incomes)
+      Total (Expenses)
+      All Incomes
+      All Expenses
+      Specific Tag
+      Specific Tag (grouped by month)
+      Bank transfers
+
+     +-----+---+----------+--------+-------------------------------------------------+--------------+--------+
+     | ✔/✖︎ | ♻︎ | Date     | Tag    | Reason                                          | Amount       | SHA1   |
+     +-----+---+----------+--------+-------------------------------------------------+--------------+--------+
+     |  ✔︎  | ♻︎ | 01/01/17 | Invest | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € | 2949af |
+     |  ✔︎  | ♻︎ | 01/02/17 | Invest | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € | 002862 |
+     |  ✔︎  | ♻︎ | 01/03/17 | Invest | ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼ C E N S O R E D ◼◼◼◼◼◼◼◼◼◼◼◼◼◼◼︎ |  99999.99 € | c88f92 |
+     +-----+---+----------+--------+-------------------------------------------------+--------------+--------+
 
 ## To do
 
 * [x] Filter by one single entry
 * [x] Report for one tag splitted by month
+* [x] Add a backup options
+* [x] Exclude account transfers from the list of expenses/incomes
 * [ ] Report for nested tags ( Car/Gasoline, Car/Insurance etc)
 * [ ] Multiple tags
-* [ ] Add a backup options
-* [ ] Manage multiple banck account
-* [ ] Exclude account transfer from the list of expenses/incomes
+* [ ] Manage multiple bank account
 * [ ] Print fancy chart in html
 * [ ] Add more parameters to directly generate the reports avoid the manual selection.
 
