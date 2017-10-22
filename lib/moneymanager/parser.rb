@@ -33,7 +33,7 @@ module Moneymanager
         entry = Entry.new
         entry.date = Date.strptime(row[:buchungstag], '%d.%m.%y')
         entry.reason = row[:verwendungszweck].squeeze(' ')
-        entry.amount = row[:betrag].to_s.gsub(',', '.').to_f
+        entry.amount = row[:betrag].to_s.tr(',', '.').to_f
         entry.company = row[:beguenstigterzahlungspflichtiger].squeeze(' ')
         entry.raw = row.to_csv.squeeze(' ')
         entries << entry
