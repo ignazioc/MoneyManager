@@ -1,9 +1,20 @@
 require 'yaml'
+require 'fileutils'
 
 module Moneymanager
   class Archiver
+
+    def self.base_path
+      base_path = File.join(Dir.home, '.moneymanager')
+    end
+
     def self.archive_path
-      File.join(Dir.home, '.moneymanager')
+      File.join(base_path, 'archive')
+    end
+
+    def self.backup_path
+      date_filename = Time.now.to_i.to_s
+      File.join(base_path, date_filename)
     end
 
     def self.empty_archive
@@ -14,8 +25,13 @@ module Moneymanager
     def self.reset
       File.write(Archiver.archive_path, Archiver.empty_archive.to_yaml)
     end
+    
+    def backup
+      File.write(Archiver.backup_path, @db.to_yaml)
+    end
 
     def initialize
+      FileUtils::mkdir_p(Archiver.base_path)
       if File.exist? Archiver.archive_path
         @db = YAML.load_file(Archiver.archive_path)
       else

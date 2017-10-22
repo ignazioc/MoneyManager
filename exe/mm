@@ -18,6 +18,15 @@ command :add do |c|
   end
 end
 
+command :backup do |c|
+  c.syntax = 'mm backup'
+  c.description = 'Create a backup copy of your archive (~/.moneymanager)'
+  c.action do |_args, _options|
+    archiver = Moneymanager::Archiver.new
+    archiver.backup
+  end
+end
+
 command :reset do |c|
   c.syntax = 'mm reset'
   c.description = 'Delete the current archive (danger zone!)'
