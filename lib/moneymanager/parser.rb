@@ -35,7 +35,7 @@ module Moneymanager
         entry.reason = row[:verwendungszweck].squeeze(' ')
         entry.amount = row[:betrag].to_s.tr(',', '.').to_f
         entry.company = row[:beguenstigterzahlungspflichtiger].squeeze(' ')
-        entry.raw = row.to_csv.squeeze(' ')
+        entry.raw = row.to_csv.squeeze(' ').strip
         entries << entry
       end
       entries

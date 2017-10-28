@@ -4,6 +4,7 @@ module Moneymanager
     attr_accessor :date, :reason, :amount, :company, :raw, :approved, :tag, :bank_transfer
 
     def initialize
+      @amount = 0
       @approved = false
       @bank_transfer = false
     end
@@ -43,6 +44,10 @@ module Moneymanager
 
     def income?
       amount > 0 && !bank_transfer
+    end
+
+    def bank_transfer?
+      bank_transfer
     end
   end
 end
