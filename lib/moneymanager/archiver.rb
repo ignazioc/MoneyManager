@@ -61,6 +61,12 @@ module Moneymanager
       save
     end
 
+    def delete(entry)
+      puts entry
+      @db[:entries].delete_if { |obj| obj.digest == entry.digest }
+      save
+    end
+
     def all_entries
       @db[:entries].sort_by(&:date)
     end
