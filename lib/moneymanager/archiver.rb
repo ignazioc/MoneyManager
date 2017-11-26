@@ -3,15 +3,17 @@ require 'fileutils'
 
 module Moneymanager
   class Archiver
-    def self.base_path
-      base_path = File.join(Dir.home, '.moneymanager')
+    attr_accessor :home_folder
+
+    def base_path
+      File.join(home_folder, '.moneymanager')
     end
 
-    def self.archive_path
+    def archive_path
       File.join(base_path, 'archive')
     end
 
-    def self.backup_path
+    def backup_path
       date_filename = Time.now.to_i.to_s
       File.join(base_path, date_filename)
     end
@@ -26,20 +28,22 @@ module Moneymanager
     end
 
     def backup
-      File.write(Archiver.backup_path, @db.to_yaml)
+      File.write(backup_path, @db.to_yaml)
     end
 
-    def initialize
-      FileUtils.mkdir_p(Archiver.base_path)
-      @db = if File.exist? Archiver.archive_path
-              YAML.load_file(Archiver.archive_path)
+    def initialize(home_folder = Dir.home)
+      self.home_folder = home_folder
+
+      FileUtils.mkdir_p(base_path)
+      @db = if File.exist? archive_path
+              YAML.load_file(archive_path)
             else
               Archiver.empty_archive
             end
     end
 
     def save
-      File.write(Archiver.archive_path, @db.to_yaml)
+      File.write(archive_path, @db.to_yaml)
     end
 
     def store(entries)
