@@ -31,8 +31,7 @@ module Moneymanager
       entries = []
       invalid = 0
       CSV.foreach(@local_file, options) do |row|
-        
-        if row[:info] == "Umsatz gebucht"
+        if row[:info] == 'Umsatz gebucht'
           entry = Entry.new
           entry.date = Date.strptime(row[:buchungstag], '%d.%m.%y')
           entry.reason = row[:verwendungszweck].squeeze(' ')
@@ -41,7 +40,7 @@ module Moneymanager
           entry.raw = row.to_csv.squeeze(' ').strip
           entries << entry
         else
-          invalid += 1 
+          invalid += 1
         end
       end
       puts "Invalid: #{invalid}"

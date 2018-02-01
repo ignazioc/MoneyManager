@@ -46,7 +46,7 @@ class Layout
     return unless rows.count > 0
     sum = rows.reduce(0) { |tot, row| tot + row.last }
     table = Terminal::Table.new
-    rows = rows.each do |row|
+    rows.each do |row|
       table.add_row [
         { value: row[0], alignment: :left },
         { value: formatted_amount(row.last), alignment: :right }

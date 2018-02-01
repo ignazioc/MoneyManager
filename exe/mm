@@ -31,9 +31,7 @@ command :reset do |c|
   c.syntax = 'mm reset'
   c.description = 'Delete the current archive (danger zone!)'
   c.action do |_args, _options|
-    if agree('Do you really want to delete everything?')
-      Moneymanager::Archiver.reset
-    end
+    Moneymanager::Archiver.reset if agree('Do you really want to delete everything?')
   end
 end
 
@@ -53,7 +51,7 @@ command :edit do |c|
   c.description = 'Edit the selected entry'
   c.option '--entry STRING', String, 'Specify the entry to edit.'
   c.action do |_args, options|
-    raise ArgumentError.new("--entry is required!") unless options.entry
+    raise ArgumentError, '--entry is required!' unless options.entry
     entry = get_entries(nil, options.entry).first
     prompt = TTY::Prompt.new
     command = prompt.select('Select one option:') do |menu|
@@ -68,9 +66,8 @@ command :edit do |c|
     when :delete_transaction
       archiver = Moneymanager::Archiver.new
       Layout.print_single(entry)
-      archiver.delete(entry) if agree("Delete?")
+      archiver.delete(entry) if agree('Delete?')
     end
-
   end
 end
 

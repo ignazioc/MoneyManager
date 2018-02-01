@@ -1,7 +1,6 @@
 class Report
-  def print_total_report(entries, onlyIncome)
-    total = 0
-    total = if onlyIncome
+  def print_total_report(entries, only_income)
+    total = if only_income
               entries.select(&:income?).map(&:amount).reduce(:+)
             else
               entries.select(&:expense?).map(&:amount).reduce(:+)
@@ -9,9 +8,9 @@ class Report
     Layout.print_single_value(total)
   end
 
-  def print_group_by_categories_report(entries, onlyIncome)
+  def print_group_by_categories_report(entries, only_income)
     entries = entries.select do |entry|
-      if onlyIncome
+      if only_income
         entry.income?
       else
         entry.expense?
