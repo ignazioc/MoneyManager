@@ -34,4 +34,15 @@ describe Moneymanager::Parser do
       entry.raw.must_equal(str)
     end
   end
+
+  describe 'when the fixture contains an Umsatz vorgemerkt' do 
+    csv_path = File.join(fixture_path, 'fixture_two_lines.csv')
+    parser = Moneymanager::Parser.new(csv_path)
+    entries = parser.parse
+
+    it 'must return an array with only one element' do
+      entries.count.must_equal(1)
+    end
+
+  end
 end
