@@ -1,7 +1,7 @@
 require 'digest/sha1'
 module Moneymanager
   class Entry
-    attr_accessor :date, :reason, :amount, :company, :raw, :approved, :tag, :bank_transfer
+    attr_accessor :id, :date, :reason, :amount, :company, :raw, :approved, :tag, :bank_transfer
 
     def initialize
       @amount = 0
