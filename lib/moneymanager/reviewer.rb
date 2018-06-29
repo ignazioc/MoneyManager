@@ -4,14 +4,14 @@ class Reviewer
     entries.each do |entry|
       Layout.print_single(entry)
       prompt = TTY::Prompt.new
-      action = prompt.select('Do you recognize?', %i[yes no skip abort], per_page: 30)
+      action = prompt.select('Do you recognize?', %w[yes no skip abort], per_page: 30)
 
       case action
-      when :yes
+      when "yes"
         entry.approved = true
-      when :no
+      when "no"
         entry.approved = false
-      when :abort
+      when "abort"
         exit
       end
       archiver.update(entry)

@@ -20,7 +20,8 @@ module Moneymanager
 
     def self.empty_archive
       { entries: [],
-        tags: [] }
+        tags: [],
+        custom_types: [] }
     end
 
     def self.reset
@@ -66,7 +67,6 @@ module Moneymanager
     end
 
     def delete(entry)
-      puts entry
       @db[:entries].delete_if { |obj| obj.digest == entry.digest }
       save
     end
@@ -75,12 +75,28 @@ module Moneymanager
       @db[:entries].sort_by(&:date)
     end
 
+    def entry_by_id(entry_id)
+      all_entries.find { | entry | 
+        entry.id.to_s == entry_id.to_s
+      }
+    end
+
     def all_bank_transfers
       @db[:entries].sort_by(&:date).select(&:bank_transfer)
     end
 
     def tags
       @db[:tags]
+    end
+
+    def custom_types
+      types = @db[:custom_types]
+      if types.nil?
+        types = []
+        @db[:custom_types] = []
+        save
+      end
+      types
     end
 
     def store_tag(tag)

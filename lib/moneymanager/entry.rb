@@ -1,12 +1,11 @@
 require 'digest/sha1'
 module Moneymanager
   class Entry
-    attr_accessor :id, :date, :reason, :amount, :company, :raw, :approved, :tag, :bank_transfer
+    attr_accessor :id, :date, :reason, :amount, :company, :raw, :approved, :custom_category, :tag, :note
 
     def initialize
-      @amount = 0
-      @approved = false
-      @bank_transfer = false
+      amount = 0
+      approved = false
     end
 
     def digest
@@ -14,7 +13,7 @@ module Moneymanager
     end
 
     def to_s
-      "Date: #{@date}, #{reason}, #{amount}, #{company}"
+      "Date: #{@date}, #{reason}, #{amount}, #{company} #{custom_type}"
     end
 
     def formatted_approved
@@ -26,28 +25,44 @@ module Moneymanager
     end
 
     def formatted_is_bank_tranfer
-      if bank_transfer
+      if bank_transfer?
         '♻︎'.yellow
       else
         ''
       end
     end
 
+    def money_amount
+      cents = amount.to_f * 100
+      Money.new(cents, 'EUR')
+    end
+
+    def formatted_date
+      date.strftime("%d.%m.%y")
+    end
+
+    def formatted_reason
+      reason[0...80]
+    end
+
     def formatted_amount
-      s = amount.to_s + ' €'
-      amount < 0 ? s.red : s.green
+      amount.to_s + ' €'
     end
 
     def expense?
-      amount < 0 && !bank_transfer
+      amount < 0 && custom_category.nil?
     end
 
     def income?
-      amount > 0 && !bank_transfer
+      amount > 0 && custom_category.nil?
     end
 
     def bank_transfer?
-      bank_transfer
+      return (custom_category == "bank_transfer")
+    end
+
+    def bank_transfer=(value)
+      self.custom_category = value ? "bank_transfer" : ''
     end
   end
 end

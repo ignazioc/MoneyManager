@@ -61,7 +61,7 @@ command :edit do |c|
     case command
     when :toggle_bank_transfer
       archiver = Moneymanager::Archiver.new
-      entry.bank_transfer = !entry.bank_transfer
+      entry.bank_transfer = !entry.bank_transfer?
       archiver.update(entry)
     when :delete_transaction
       archiver = Moneymanager::Archiver.new

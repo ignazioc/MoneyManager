@@ -4,20 +4,23 @@ class Tagger
   end
 
   def retag(entries)
+    
     archiver = Moneymanager::Archiver.new
 
     prompt = TTY::Prompt.new
     entries.each do |entry|
+      
       Layout.clear
       Layout.print_single(entry)
-      options = default_options.concat(archiver.tags.sort!)
+      
+      options = default_options.concat(archiver.tags.sort!).map { |x| x.to_s }
       action = prompt.select('Do you want add a tags?', options, per_page: 30)
 
-      if action == default_options[0]
+      if action == options[0]
         # NOP
-      elsif action == default_options[1]
+      elsif action == options[1]
         exit
-      elsif action == default_options[2]
+      elsif action == options[2]
         tag = prompt.ask('Create a new tag') do |q|
           q.required true
           q.validate(/^\S*$/)

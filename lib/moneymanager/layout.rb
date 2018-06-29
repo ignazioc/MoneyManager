@@ -4,7 +4,7 @@ class Layout
       print_single(entries.first)
     else
       clear
-      rows = entries.map { |entry| [entry.formatted_approved, entry.formatted_is_bank_tranfer, entry.date.strftime('%d/%m/%y'), entry.tag, entry.reason[0...50], entry.formatted_amount, entry.digest[0...6]] }
+      rows = entries.map { |entry| [entry.formatted_approved, entry.formatted_is_bank_tranfer, entry.date.strftime('%y/%m/%d'), entry.tag, entry.reason[0...50], Layout.formatted_amount(entry.amount), entry.digest[0...6]] }
 
       table = Terminal::Table.new headings: ['✔/✖︎', '♻︎', 'Date', 'Tag', 'Reason', 'Amount', 'SHA1'], rows: rows
       table.align_column(5, :right)
